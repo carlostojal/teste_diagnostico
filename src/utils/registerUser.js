@@ -15,10 +15,10 @@ export default async function registerUser(name, email, password) {
         } else {
             users = [] // no user registered, so initialize a new array
         }
-        for(user in users) { // search for the user
-            if(user.name == name)
+        for(var i = 0; i < users.length; i++) { // search for the user
+            if(users[i].name.toLowerCase() == name.toLowerCase())
                 return 1
-            else if(user.email == email)
+            else if(users[i].email.toLowerCase() == email.toLowerCase())
                 return 2
         }
         // the user doesn't exist, so register it

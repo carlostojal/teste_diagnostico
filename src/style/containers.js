@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
 import colors from './colors'
 
@@ -29,12 +29,22 @@ const containers = StyleSheet.create({
         borderRadius: 30,
         padding: 15,
     },
-    image: {
+    imageContainer: {
         borderWidth: 1,
         borderColor: 'lightgray',
-        borderRadius: 30,
+        borderRadius: 10,
         padding: 15,
-        marginBottom: 15
+        marginBottom: 15,
+        width: (Dimensions.get('window').width - (2 * 15)) / 4,
+        height: (Dimensions.get('window').width - (2 * 15)) / 4
+    },
+    image: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        borderRadius: 10
     }
 })
 

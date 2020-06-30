@@ -28,15 +28,16 @@ export default class Signup extends Component {
 	}
 
 	register = () => {
+		console.log("User clicked signup")
 		if(this.state.name != "" && this.state.email != "" && this.state.password != "") {
 			registerUser(this.state.name, this.state.email, this.state.password).then((result) => {
 				if(result == 0) {
 					Alert.alert("Success", "User registered successfully.")
 					this.props.navigation.goBack()
 				} else if(result == 1) {
-					Alert.alert("Warning", "A user with the name \"" + user.name + "\" already exists.")
+					Alert.alert("Warning", "A user with the name \"" + this.state.name + "\" already exists.")
 				} else if(result == 2) {
-					Alert.alert("Warning", "A user with the email \"" + user.email + "\" already exists.")
+					Alert.alert("Warning", "A user with the email \"" + this.state.email + "\" already exists.")
 				} else {
 					Alert.alert("Error", "Error registering your user. Please try again later.")
 				}

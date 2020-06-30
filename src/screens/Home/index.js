@@ -28,6 +28,7 @@ export default class Home extends Component {
 		example image object
 
 		{
+			id: 12345,
 			user_email: "",
 			uri: "",
 			name: "Example Name",
@@ -63,16 +64,18 @@ export default class Home extends Component {
 		return(
 			<View style={containers.container}>
 				<UserGallery images={this.state.images} />
-				<View style={{flexDirection: 'row'}}>
+				<View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
 					<TouchableOpacity style={containers.button} onPress={ () => this.upload() }>
 						<Text style={text.buttonText}> Upload Image </Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={containers.button} onPress={ () => this.load() }>
 						<Text style={text.buttonText}> Reload </Text>
 					</TouchableOpacity>
+					{/*
 					<TouchableOpacity style={containers.button} onPress={ () => clearData() }>
 						<Text style={text.buttonText}> Clear Data </Text>
 					</TouchableOpacity>
+					*/}
 				</View>
 			</View>
 		)

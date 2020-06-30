@@ -16,7 +16,7 @@ export default async function saveImage(image) {
             images = [] // no image registered, so initialize a new array
         }
         for(var i = 0; i < images.length; i++) {
-            if(images[i].uri == image.uri || images[i].name == image.name)
+            if(images[i].name.toLowerCase() == image.name.toLowerCase())
                 return 1
         }
         images.push(image)

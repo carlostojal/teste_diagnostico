@@ -161,7 +161,7 @@ export default class Upload extends Component {
 					Alert.alert("Success", "Image saved successfully.")
 					this.props.navigation.goBack()
 				} else if(result == 1) {
-					Alert.alert("Warning", "This image was already registered, or one with the same name.")
+					Alert.alert("Warning", "An image with the same name was already registered.")
 				} else {
 					Alert.alert("Error", "An unexpected error occurred saving the image. Please try again later.")
 				}

@@ -20,6 +20,8 @@ export default class UserGallery extends Component {
 		else
 			details += "(" + item.coordinates[0] + ";" + item.coordinates[1] + ")"
 		details += "\n"
+		let date = new Date(item.id)
+		details += "Upload date: " + date.getDay() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) + ":" + (date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds()) + "\n"
 		Alert.alert("Details", details)
 	}
 
@@ -35,10 +37,12 @@ export default class UserGallery extends Component {
 			<View style = {{flex: 1}}>
 				{this.props.images.length > 0 &&
 					<FlatList
+						style={{flexDirection: 'row'}}
 						data = {this.props.images}
+						numColumns = {4}
 						renderItem = {({item, index}) => (
-							<TouchableOpacity key = {item.id} style = {containers.image} onPress = {() => this.showDetails(item)}>
-								<Image source={{uri: item.uri}} style={{width: dimensions[index][0], height: dimensions[index][1], borderRadius: 10}} />
+							<TouchableOpacity key = {item.id} style = {containers.imageContainer} onPress = {() => this.showDetails(item)}>
+								<Image resizeMode="stretch" source={{uri: item.uri}} style={containers.image/*{width: dimensions[index][0], height: dimensions[index][1], borderRadius: 10}*/} />
 							</TouchableOpacity>
                         )}
                         keyExtractor = {item => item.id.toString()}

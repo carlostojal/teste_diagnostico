@@ -1,8 +1,6 @@
 
 import { AsyncStorage } from 'react-native';
 
-import getUser from '../utils/getUser'
-
 export default async function getUserImages(user_email) {
     /*
         1 - error
@@ -17,6 +15,9 @@ export default async function getUserImages(user_email) {
                     out.push(images[i])
             }
         }
+        out.sort((a, b) => {
+            return b.id - a.id
+        })
         return out
     } catch (error) {
         console.log(error)
