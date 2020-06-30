@@ -6,6 +6,10 @@
 
 ![Gallery](https://raw.githubusercontent.com/carlostojal/teste_diagnostico/master/assets/screenshots/gallery.png)
 
+* Details
+
+![Viewer](https://raw.githubusercontent.com/carlostojal/teste_diagnostico/master/assets/screenshots/details.png)
+
 
 * Login
 
