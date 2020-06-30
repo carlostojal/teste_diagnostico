@@ -26,6 +26,10 @@ export default class UserGallery extends Component {
 								<Image source={{uri: item.uri}} style={{width: dimensions[index][0], height: dimensions[index][1], borderRadius: 10}} />
 								<Text style = {text.detailsText}> {"Name: " + item.name} </Text>
 								<Text style = {text.detailsText}> {"Dimensions: " + item.dimensions[0] + "x" + item.dimensions[1] + " px"} </Text>
+								<Text style = {text.detailsText}> {"Size: " + item.size} </Text>
+								{item.coordinates[0] != 0 && item.coordinates[1] != 0 &&
+									<Text style = {text.detailsText}> {"Coordinates: (" + item.coordinates[0] + ";" + item.coordinates[1] + ")"} </Text>
+								}
 							</TouchableOpacity>
                         )}
                         keyExtractor = {item => item.id.toString()}

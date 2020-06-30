@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { View, ScrollView, Text, TextInput, TouchableOpacity, Alert, Image, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
+import Exif from 'react-native-exif';
 
 import containers from '../../style/containers';
 import text from '../../style/text';
@@ -19,7 +20,8 @@ export default class Upload extends Component {
 			uri: "",
 			name: "",
 			size: "",
-			dimensions: [0, 0]
+			dimensions: [0, 0],
+			coordinates: [0, 0]
 		},
 		firstOpen: true
 	}
@@ -64,16 +66,19 @@ export default class Upload extends Component {
 				console.log("User selected image")
 				var size
 				var base64 = require('base-64')
-				RNFetchBlob.fs.readFile(result.uri, 'base64').then((data) => {
+				RNFetchBlob.fs.readFile(result.uri, 'base64').then((data) => { // get file size
 					var decodedData = base64.decode(data)
 					var bytes=decodedData.length
 					if(bytes < 1024) size = bytes + " B"
 					else if(bytes < 1048576) size = (bytes / 1024).toFixed(3) + " KB"
 					else if(bytes < 1073741824) size = (bytes / 1048576).toFixed(2) + " MB"
 					else size = (bytes / 1073741824).toFixed(3) + " GB"
-					getUser().then((user_email) => {
-						this.updateImage({id: new Date().getTime(), uri: result.uri, dimensions: [result.width, result.height], user_email: user_email, size: size})
-						console.log(result)
+					Exif.getLatLong(result.uri).then(({latitude, longitude}) => {
+						getUser().then((user_email) => { // get session email
+							console.log(latitude + ", " + longitude)
+							this.updateImage({id: new Date().getTime(), uri: result.uri, dimensions: [result.width, result.height], user_email: user_email, size: size, coordinates: [latitude, longitude]})
+							console.log(result)
+						})
 					})
 				})
 			} else {
