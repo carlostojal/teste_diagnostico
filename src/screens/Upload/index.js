@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { View, ScrollView, Text, TextInput, TouchableOpacity, Alert, Image, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import RNFetchBlob from 'rn-fetch-blob';
 
 import containers from '../../style/containers';
 import text from '../../style/text';
@@ -37,24 +38,50 @@ export default class Upload extends Component {
 		this.setState({ firstOpen: false })
 	}
 
+	
+	componentDidMount() {
+		this.getPermissionAsync();
+	}
+	
+	getPermissionAsync = async () => {
+		if (Constants.platform.ios) {
+			const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+			if (status !== 'granted') {
+				Alert.alert("Warning", "You have to accept the permission request.");
+			}
+		}
+	}
+
 	upload = async () => {
 		try {
+			console.log("User selecting image")
 			let result = await ImagePicker.launchImageLibraryAsync({
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				quality: 1
 			})
 			if(!result.cancelled) {
-				getUser().then((user_email) => {
-					console.log(result.data)
-					this.updateImage({id: new Date().getTime(), uri: result.uri, dimensions: [result.width, result.height], user_email: user_email})
-					console.log(result)
+				console.log("User selected image")
+				var size
+				var base64 = require('base-64')
+				RNFetchBlob.fs.readFile(result.uri, 'base64').then((data) => {
+					var decodedData = base64.decode(data)
+					var bytes=decodedData.length
+					if(bytes < 1024) size = bytes + " B"
+					else if(bytes < 1048576) size = (bytes / 1024).toFixed(3) + " KB"
+					else if(bytes < 1073741824) size = (bytes / 1048576).toFixed(2) + " MB"
+					else size = (bytes / 1073741824).toFixed(3) + " GB"
+					getUser().then((user_email) => {
+						this.updateImage({id: new Date().getTime(), uri: result.uri, dimensions: [result.width, result.height], user_email: user_email, size: size})
+						console.log(result)
+					})
 				})
 			} else {
+				console.log("User haven't selected image")
 				this.props.navigation.goBack()
 			}
 		} catch (error) {
-			console.log(error)
+			console.log("Error opening image selector. " + error)
 		}
 	}
 

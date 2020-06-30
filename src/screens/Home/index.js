@@ -37,7 +37,7 @@ export default class Home extends Component {
 	*/
 
 	upload = () => {
-		this.props.navigation.navigate('Upload', {updateImages: this.updateImages})
+		this.props.navigation.navigate('Upload')
 	}
 
 	load = () => {
