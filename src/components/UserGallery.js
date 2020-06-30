@@ -7,6 +7,10 @@ import text from '../style/text'
 
 export default class UserGallery extends Component {
 
+	openViewer = (item) => {
+		this.props.navigation.navigate('ViewImage', {image: item})
+	}
+
 	showDetails = (item) => {
 		console.log("ITEM: " + item.key)
 		let details = ""
@@ -41,8 +45,8 @@ export default class UserGallery extends Component {
 						data = {this.props.images}
 						numColumns = {4}
 						renderItem = {({item, index}) => (
-							<TouchableOpacity key = {item.id} style = {containers.imageContainer} onPress = {() => this.showDetails(item)}>
-								<Image resizeMode="stretch" source={{uri: item.uri}} style={containers.image/*{width: dimensions[index][0], height: dimensions[index][1], borderRadius: 10}*/} />
+							<TouchableOpacity key = {item.id} style = {containers.imageContainer} onPress = {() => this.openViewer(item)} onLongPress = {() => this.showDetails(item)}>
+								<Image resizeMode="stretch" source={{uri: item.uri}} style={containers.image} />
 							</TouchableOpacity>
                         )}
                         keyExtractor = {item => item.id.toString()}

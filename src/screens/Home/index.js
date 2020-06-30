@@ -63,7 +63,7 @@ export default class Home extends Component {
 		}
 		return(
 			<View style={containers.container}>
-				<UserGallery images={this.state.images} />
+				<UserGallery images={this.state.images} navigation={this.props.navigation} route={this.props.route}/>
 				<View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
 					<TouchableOpacity style={containers.button} onPress={ () => this.upload() }>
 						<Text style={text.buttonText}> Upload Image </Text>

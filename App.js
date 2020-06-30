@@ -7,6 +7,7 @@ import Home from './src/screens/Home';
 import Login from './src/screens/Login';
 import Signup from './src/screens/Signup';
 import Upload from './src/screens/Upload';
+import ViewImage from './src/screens/ViewImage';
 
 const Stack = createStackNavigator();
 
@@ -18,6 +19,7 @@ export default function App() {
 	  		<Stack.Screen name="Login" component={Login} />
 	  		<Stack.Screen name="Signup" component={Signup} />
 			<Stack.Screen name="Upload" component={Upload} />
+			<Stack.Screen name="ViewImage" component={ViewImage} />
 	  	</Stack.Navigator>
 	  </NavigationContainer>
   )
