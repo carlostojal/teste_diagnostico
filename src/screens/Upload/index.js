@@ -2,14 +2,19 @@
 import React, { Component } from 'react';
 import { View, ScrollView, Text, TextInput, TouchableOpacity, Alert, Image, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import RNFetchBlob from 'rn-fetch-blob';
 import Exif from 'react-native-exif';
+
+/*
+import * as tf from '@tensorflow/tfjs';
+import * as mobilenet from '@tensorflow-models/mobilenet';
+import { fetch, decodeJpeg } from '@tensorflow/tfjs-react-native';*/
 
 import containers from '../../style/containers';
 import text from '../../style/text';
 
 import saveImage from '../../utils/saveImage';
 import getUser from '../../utils/getUser';
+import getFileSize from '../../utils/getFileSize';
 
 export default class Upload extends Component {
 
@@ -21,9 +26,16 @@ export default class Upload extends Component {
 			name: "",
 			size: "",
 			dimensions: [0, 0],
-			coordinates: [0, 0]
+			coordinates: [0, 0],
+			classification: null
 		},
-		firstOpen: true
+		firstOpen: true,
+		status: "",
+		tfReady: false,
+		gotImageSize: false,
+		gotLocation: false,
+		gotUserEmail: false,
+		classified: false
 	}
 
 	updateImage = (image) => {
@@ -40,18 +52,24 @@ export default class Upload extends Component {
 		this.setState({ firstOpen: false })
 	}
 
-	
-	componentDidMount() {
-		this.getPermissionAsync();
+	updateStatus = (text) => {
+		this.setState({ status: text })
 	}
-	
-	getPermissionAsync = async () => {
-		if (Constants.platform.ios) {
-			const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-			if (status !== 'granted') {
-				Alert.alert("Warning", "You have to accept the permission request.");
-			}
-		}
+
+	setTfReady = () => {
+		this.setState({ tfReady: true })
+	}
+
+	setGotImageSize = () => {
+		this.setState({ gotImageSize: true })
+	}
+
+	setGotLocation = () => {
+		this.setState({ gotLocation: true })
+	}
+
+	setClassified = () => {
+		this.setState({ classification: true })
 	}
 
 	upload = async () => {
@@ -63,24 +81,14 @@ export default class Upload extends Component {
 				quality: 1
 			})
 			if(!result.cancelled) {
-				console.log("User selected image")
-				var size
-				var base64 = require('base-64')
-				RNFetchBlob.fs.readFile(result.uri, 'base64').then((data) => { // get file size
-					var decodedData = base64.decode(data)
-					var bytes=decodedData.length
-					if(bytes < 1024) size = bytes + " B"
-					else if(bytes < 1048576) size = (bytes / 1024).toFixed(3) + " KB"
-					else if(bytes < 1073741824) size = (bytes / 1048576).toFixed(2) + " MB"
-					else size = (bytes / 1073741824).toFixed(3) + " GB"
-					Exif.getLatLong(result.uri).then(({latitude, longitude}) => {
-						getUser().then((user_email) => { // get session email
-							console.log(latitude + ", " + longitude)
-							this.updateImage({id: new Date().getTime(), uri: result.uri, dimensions: [result.width, result.height], user_email: user_email, size: size, coordinates: [latitude, longitude]})
-							console.log(result)
-						})
-					})
+				let image = this.state.image
+				image.uri = result.uri
+				image.dimensions = [result.width, result.height]
+				this.setState({
+					image: image,
+					firstOpen: false
 				})
+				console.log("User selected image")
 			} else {
 				console.log("User haven't selected image")
 				this.props.navigation.goBack()
@@ -88,6 +96,62 @@ export default class Upload extends Component {
 		} catch (error) {
 			console.log("Error opening image selector. " + error)
 		}
+	}
+
+	getImageSize = async (uri) => {
+		let size = await getFileSize(uri)
+		let image = this.state.image
+		image.size = size
+		this.setState({
+			image: image,
+			gotImageSize: true,
+			status: "Got image size."
+		})
+	}
+
+	getLatLong = async (uri) => {
+		let location = await Exif.getLatLong(uri)
+		let image = this.state.image
+		image.coordinates = [location.latitude, location.longitude]
+		this.setState({
+			image: image,
+			gotLocation: true,
+			status: "Got capture coordinates."
+		})
+	}
+
+	getUserEmail = async () => {
+		let user_email = await getUser()
+		let image = this.state.image
+		image.user_email = user_email
+		this.setState({
+			image: image,
+			gotUserEmail: true,
+			status: "Got user session."
+		})
+	}
+
+	classify = async (uri) => {
+		// Load mobilenet.
+		const model = await mobilenet.load();
+
+		// Get a reference to the bundled asset and convert it to a tensor
+		const image = require('../../../assets/cat.jpg');
+		const imageAssetPath = Image.resolveAssetSource(image);
+		const response = await fetch(imageAssetPath.uri, {}, { isBinary: true });
+		const imageData = await response.arrayBuffer();
+
+		const imageTensor = decodeJpeg(imageData);
+
+		const prediction = await model.classify(imageTensor);
+
+		let image_data = this.state.image
+		image_data.classification = prediction
+		this.setState({
+			image: image_data,
+			classified: true,
+			status: "Classified. Done."
+		})
 	}
 
 	save = () => {
@@ -110,13 +174,30 @@ export default class Upload extends Component {
 	render() {
 		if(this.state.firstOpen) { // open the image library only in the first activity render
 			this.upload() // open image library
-			this.setOpened()
 		}
 		var targetWidth, targetHeight
-		if(this.state.image.uri != "") {
+		if(!this.state.firstOpen && this.state.image.uri != "") { // image was uploaded
 			targetWidth = Dimensions.get('window').width - (2 * 15)
 			targetHeight = this.state.image.dimensions[1] / (this.state.image.dimensions[0] / targetWidth)
+			if(!this.state.gotImageSize) { // get image size
+				this.getImageSize(this.state.image.uri)
+			}
+			if(!this.state.gotLocation) { // get capture coordinates
+				this.getLatLong(this.state.image.uri)
+			}
+			if(!this.state.gotUserEmail) {
+				this.getUserEmail()
+			}
+			/*
+			if(this.state.tfReady) {
+				if(!this.state.classified) {
+					this.classify()
+				}
+			}*/
 		}
+
+		console.log(this.state.image)
+
 		return(
 			<View style={containers.container}>
 				<ScrollView>
@@ -124,13 +205,16 @@ export default class Upload extends Component {
 						<Text style={text.formLabel}> Image name </Text>
 						<TextInput style={containers.textInput} onChangeText={ (name) => this.updateName(name)}/>
 					</View>
+					<Text> {this.state.status} </Text>
 					{this.state.image.uri != "" &&
 						<Image source={{uri: this.state.image.uri}} style={{width: targetWidth, height: targetHeight}} />
 					}
 				</ScrollView>
-				<TouchableOpacity style={containers.button} onPress={ () => this.save() }>
-					<Text style={text.buttonText}> Save </Text>
-				</TouchableOpacity>
+				{this.state.image.uri != "" &&
+					<TouchableOpacity style={containers.button} onPress={ () => this.save() }>
+						<Text style={text.buttonText}> Save </Text>
+					</TouchableOpacity>
+				}
 			</View>
 		)
 	}

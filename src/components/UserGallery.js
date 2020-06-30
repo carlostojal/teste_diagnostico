@@ -1,12 +1,27 @@
 
 import React, { Component } from 'react';
-import { View, FlatList, Text, TouchableOpacity, Image, Dimensions } from 'react-native';
+import { View, FlatList, Text, TouchableOpacity, Image, Dimensions, Alert } from 'react-native';
 
 import containers from '../style/containers'
 import text from '../style/text'
-import getUserImages from '../utils/getUserImages';
 
 export default class UserGallery extends Component {
+
+	showDetails = (item) => {
+		console.log("ITEM: " + item.key)
+		let details = ""
+		details += "Name: " + item.name + "\n"
+		details += "File name: " + item.uri + "\n"
+		details += "Dimensions: " + item.dimensions[0] + "x" + item.dimensions[1] + " px" + "\n"
+		details += "Size: " + item.size + "\n"
+		details += "Coordinates: "
+		if(item.coordinates[0] == 0 && item.coordinates[1] == 0)
+			details += "NA"
+		else
+			details += "(" + item.coordinates[0] + ";" + item.coordinates[1] + ")"
+		details += "\n"
+		Alert.alert("Details", details)
+	}
 
     render() {
         var dimensions = []
@@ -22,14 +37,8 @@ export default class UserGallery extends Component {
 					<FlatList
 						data = {this.props.images}
 						renderItem = {({item, index}) => (
-							<TouchableOpacity key = {item.id} style = {containers.image}>
+							<TouchableOpacity key = {item.id} style = {containers.image} onPress = {() => this.showDetails(item)}>
 								<Image source={{uri: item.uri}} style={{width: dimensions[index][0], height: dimensions[index][1], borderRadius: 10}} />
-								<Text style = {text.detailsText}> {"Name: " + item.name} </Text>
-								<Text style = {text.detailsText}> {"Dimensions: " + item.dimensions[0] + "x" + item.dimensions[1] + " px"} </Text>
-								<Text style = {text.detailsText}> {"Size: " + item.size} </Text>
-								{item.coordinates[0] != 0 && item.coordinates[1] != 0 &&
-									<Text style = {text.detailsText}> {"Coordinates: (" + item.coordinates[0] + ";" + item.coordinates[1] + ")"} </Text>
-								}
 							</TouchableOpacity>
                         )}
                         keyExtractor = {item => item.id.toString()}
