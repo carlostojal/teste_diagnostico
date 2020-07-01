@@ -7,12 +7,11 @@ import Exif from 'react-native-exif';
 /*
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
-import { fetch, decodeJpeg } from '@tensorflow/tfjs-react-native';*/
+import { fetch } from '@tensorflow/tfjs-react-native';*/
 
 import containers from '../../style/containers';
 import text from '../../style/text';
 
-import createFile from '../../utils/createFile';
 import saveImage from '../../utils/saveImage';
 import getUser from '../../utils/getUser';
 import getFileSize from '../../utils/getFileSize';
@@ -107,17 +106,6 @@ export default class Upload extends Component {
 		}
 	}
 
-	createImage = async (uri, img_id) => {
-		let dest_path = await createFile(uri, img_id)
-		let image = this.state.image
-		image.uri = dest_path
-		this.setState({
-			image: image,
-			createdImage: true,
-			status: "Created image."
-		})
-	}
-
 	getImageSize = async (uri) => {
 		let size = await getFileSize(uri)
 		let image = this.state.image
@@ -192,7 +180,7 @@ export default class Upload extends Component {
 			Alert.alert("Warning", "The name field can't be empty.")
 		}
 	}
-
+	
 	render() {
 		if(this.state.firstOpen) { // open the image library only in the first activity render
 			this.upload() // open image library
