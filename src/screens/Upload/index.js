@@ -4,11 +4,6 @@ import { View, ScrollView, Text, TextInput, TouchableOpacity, Alert, Image, Dime
 import * as ImagePicker from 'expo-image-picker';
 import Exif from 'react-native-exif';
 
-/*
-import * as tf from '@tensorflow/tfjs';
-import * as mobilenet from '@tensorflow-models/mobilenet';
-import { fetch } from '@tensorflow/tfjs-react-native';*/
-
 import containers from '../../style/containers';
 import text from '../../style/text';
 
@@ -139,30 +134,6 @@ export default class Upload extends Component {
 		})
 	}
 
-	/*
-	classify = async (uri) => {
-		// Load mobilenet.
-		const model = await mobilenet.load();
-
-		// Get a reference to the bundled asset and convert it to a tensor
-		const image = require('../../../assets/cat.jpg');
-		const imageAssetPath = Image.resolveAssetSource(image);
-		const response = await fetch(imageAssetPath.uri, {}, { isBinary: true });
-		const imageData = await response.arrayBuffer();
-
-		const imageTensor = decodeJpeg(imageData);
-
-		const prediction = await model.classify(imageTensor);
-
-		let image_data = this.state.image
-		image_data.classification = prediction
-		this.setState({
-			image: image_data,
-			classified: true,
-			status: "Classified. Done."
-		})
-	}*/
-
 	save = () => {
 		if(this.state.image.name != "") {
 			saveImage(this.state.image).then((result) => {
@@ -198,12 +169,6 @@ export default class Upload extends Component {
 			if(!this.state.gotUserEmail) { // get current user email
 				this.getUserEmail()
 			}
-			/*
-			if(this.state.tfReady) {
-				if(!this.state.classified) {
-					this.classify()
-				}
-			}*/
 		}
 
 		console.log(this.state.image)
