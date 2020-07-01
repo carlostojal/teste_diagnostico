@@ -1,5 +1,5 @@
 
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default async function loginUser(email, password) {
     /*
@@ -21,6 +21,7 @@ export default async function loginUser(email, password) {
         }
         return 1
     } catch (error) {
+        console.log(error)
         return 2
     }
 }
