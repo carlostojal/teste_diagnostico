@@ -24,7 +24,7 @@ export default class UserGallery extends Component {
 			details += "(" + item.coordinates[0] + ";" + item.coordinates[1] + ")"
 		details += "\n"
 		let date = new Date(item.id)
-		details += "Upload date: " + date.getDay() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) + ":" + (date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds()) + "\n"
+		details += "Upload date: " + date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) + ":" + (date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds()) + "\n"
 		Alert.alert("Details", details)
 	}
 
