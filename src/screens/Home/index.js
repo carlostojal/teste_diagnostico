@@ -71,11 +71,11 @@ export default class Home extends Component {
 					<TouchableOpacity style={containers.button} onPress={ () => this.load() }>
 						<Text style={text.buttonText}> Reload </Text>
 					</TouchableOpacity>
-					{/*
+					{
 					<TouchableOpacity style={containers.button} onPress={ () => clearData() }>
 						<Text style={text.buttonText}> Clear Data </Text>
 					</TouchableOpacity>
-					*/}
+					}
 				</View>
 			</View>
 		)

@@ -12,6 +12,7 @@ import { fetch, decodeJpeg } from '@tensorflow/tfjs-react-native';*/
 import containers from '../../style/containers';
 import text from '../../style/text';
 
+import createFile from '../../utils/createFile';
 import saveImage from '../../utils/saveImage';
 import getUser from '../../utils/getUser';
 import getFileSize from '../../utils/getFileSize';
@@ -32,6 +33,7 @@ export default class Upload extends Component {
 		firstOpen: true,
 		status: "",
 		tfReady: false,
+		createdImage: false,
 		gotImageSize: false,
 		gotLocation: false,
 		gotUserEmail: false,
@@ -98,6 +100,17 @@ export default class Upload extends Component {
 		}
 	}
 
+	createImage = async (uri, img_id) => {
+		let dest_path = await createFile(uri, img_id)
+		let image = this.state.image
+		image.uri = dest_path
+		this.setState({
+			image: image,
+			createdImage: true,
+			status: "Created image."
+		})
+	}
+
 	getImageSize = async (uri) => {
 		let size = await getFileSize(uri)
 		let image = this.state.image
@@ -131,6 +144,7 @@ export default class Upload extends Component {
 		})
 	}
 
+	/*
 	classify = async (uri) => {
 		// Load mobilenet.
 		const model = await mobilenet.load();
@@ -152,7 +166,7 @@ export default class Upload extends Component {
 			classified: true,
 			status: "Classified. Done."
 		})
-	}
+	}*/
 
 	save = () => {
 		if(this.state.image.name != "") {
@@ -179,13 +193,17 @@ export default class Upload extends Component {
 		if(!this.state.firstOpen && this.state.image.uri != "") { // image was uploaded
 			targetWidth = Dimensions.get('window').width - (2 * 15)
 			targetHeight = this.state.image.dimensions[1] / (this.state.image.dimensions[0] / targetWidth)
+			/*
+			if(!this.state.createdImage) {
+				this.createImage(this.state.image.uri, this.state.image.id) // create image from cache
+			}*/
 			if(!this.state.gotImageSize) { // get image size
 				this.getImageSize(this.state.image.uri)
 			}
 			if(!this.state.gotLocation) { // get capture coordinates
 				this.getLatLong(this.state.image.uri)
 			}
-			if(!this.state.gotUserEmail) {
+			if(!this.state.gotUserEmail) { // get current user email
 				this.getUserEmail()
 			}
 			/*
@@ -197,6 +215,7 @@ export default class Upload extends Component {
 		}
 
 		console.log(this.state.image)
+		console.log(this.state.status)
 
 		return(
 			<View style={containers.container}>
@@ -205,7 +224,6 @@ export default class Upload extends Component {
 						<Text style={text.formLabel}> Image name </Text>
 						<TextInput style={containers.textInput} onChangeText={ (name) => this.updateName(name)}/>
 					</View>
-					<Text> {this.state.status} </Text>
 					{this.state.image.uri != "" &&
 						<Image source={{uri: this.state.image.uri}} style={{width: targetWidth, height: targetHeight}} />
 					}
