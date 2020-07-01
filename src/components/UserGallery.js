@@ -45,7 +45,7 @@ export default class UserGallery extends Component {
 						numColumns = {4}
 						renderItem = {({item, index}) => (
 							<TouchableOpacity key = {item.id} style = {containers.imageContainer} onPress = {() => this.openViewer(item)} onLongPress = {() => this.showDetails(item)}>
-								<Image resizeMode="cover" source={{uri: item.uri}} style={containers.image} />
+								<Image resizeMode="cover" source={{uri: (item.data)}} style={containers.image} />
 							</TouchableOpacity>
                         )}
                         keyExtractor = {item => item.id.toString()}

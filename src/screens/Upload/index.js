@@ -24,6 +24,7 @@ export default class Upload extends Component {
 			id: new Date().getTime(),
 			user_email: "",
 			uri: "",
+			data: "",
 			name: "",
 			size: "",
 			dimensions: [0, 0],
@@ -80,11 +81,17 @@ export default class Upload extends Component {
 			let result = await ImagePicker.launchImageLibraryAsync({
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
+				allowsMultipleSelection: false,
+				base64: true,
 				quality: 1
 			})
+			console.log(result)
 			if(!result.cancelled) {
 				let image = this.state.image
 				image.uri = result.uri
+				let extension = result.uri.split('.')[result.uri.split('.').length - 1]
+				image.data = "data:image/" + extension + ";base64," + result.base64
+				console.log(image.data)
 				image.dimensions = [result.width, result.height]
 				this.setState({
 					image: image,
@@ -226,7 +233,7 @@ export default class Upload extends Component {
 						<TextInput style={containers.textInput} onChangeText={ (name) => this.updateName(name)}/>
 					</View>
 					{this.state.image.uri != "" &&
-						<Image source={{uri: this.state.image.uri}} style={{width: targetWidth, height: targetHeight}} />
+						<Image source={{uri: this.state.image.data}} style={{width: targetWidth, height: targetHeight}} />
 					}
 				</ScrollView>
 				{this.state.image.uri != "" &&
