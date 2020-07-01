@@ -38,14 +38,15 @@ export default class Home extends Component {
 	*/
 
 	upload = () => {
-		this.props.navigation.navigate('Upload')
+		this.props.navigation.navigate('Upload', {load: this.load.bind(this)})
 	}
 
 	load = () => {
 		getUser().then((user_email) => {
 			getUserImages(user_email).then((images) => {
 				if(images != 1) {
-					if(images != this.state.images) {
+					if(images.length != this.state.images.length) {
+						console.log("UPDATING STATE")
 						this.setState({
 							images: images,
 							firstRender: false

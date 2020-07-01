@@ -173,6 +173,7 @@ export default class Upload extends Component {
 			saveImage(this.state.image).then((result) => {
 				if(result == 0) {
 					Alert.alert("Success", "Image saved successfully.")
+					this.props.route.params.load()
 					this.props.navigation.goBack()
 				} else if(result == 1) {
 					Alert.alert("Warning", "An image with the same name was already registered.")
