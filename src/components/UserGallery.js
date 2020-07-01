@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { View, FlatList, Text, TouchableOpacity, Image, Dimensions, Alert } from 'react-native';
 
 import containers from '../style/containers'
-import text from '../style/text'
 
 export default class UserGallery extends Component {
 

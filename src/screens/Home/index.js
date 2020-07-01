@@ -45,10 +45,12 @@ export default class Home extends Component {
 		getUser().then((user_email) => {
 			getUserImages(user_email).then((images) => {
 				if(images != 1) {
-					this.setState({
-						images: images,
-						firstRender: false
-					})
+					if(images != this.state.images) {
+						this.setState({
+							images: images,
+							firstRender: false
+						})
+					}
 				} else {
 					Alert.alert("Error", "Error getting images.")
 				}
@@ -58,9 +60,7 @@ export default class Home extends Component {
 	}
 
 	render() {
-		if(this.state.firstRender) {
-			this.load()
-		}
+		this.load()
 		return(
 			<View style={containers.container}>
 				<UserGallery images={this.state.images} navigation={this.props.navigation} route={this.props.route}/>
