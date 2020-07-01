@@ -65,19 +65,22 @@ export default class Home extends Component {
 		return(
 			<View style={containers.container}>
 				<UserGallery images={this.state.images} navigation={this.props.navigation} route={this.props.route}/>
+				<TouchableOpacity style={containers.button} onPress={ () => this.upload() }>
+					<Text style={text.buttonText}> Upload Image </Text>
+				</TouchableOpacity>
+				{/*
 				<View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-					<TouchableOpacity style={containers.button} onPress={ () => this.upload() }>
-						<Text style={text.buttonText}> Upload Image </Text>
-					</TouchableOpacity>
-					{/*
+					
+					{
 					<TouchableOpacity style={containers.button} onPress={ () => this.load() }>
 						<Text style={text.buttonText}> Reload </Text>
 					</TouchableOpacity>
 					<TouchableOpacity style={containers.button} onPress={ () => clearData() }>
 						<Text style={text.buttonText}> Clear Data </Text>
-					</TouchableOpacity>*/
+					</TouchableOpacity>
 					}
-				</View>
+				</View>*/
+				}
 			</View>
 		)
 	}
