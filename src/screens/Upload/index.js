@@ -189,10 +189,6 @@ export default class Upload extends Component {
 		if(!this.state.firstOpen && this.state.image.uri != "") { // image was uploaded
 			targetWidth = Dimensions.get('window').width - (2 * 15)
 			targetHeight = this.state.image.dimensions[1] / (this.state.image.dimensions[0] / targetWidth)
-			/*
-			if(!this.state.createdImage) {
-				this.createImage(this.state.image.uri, this.state.image.id) // create image from cache
-			}*/
 			if(!this.state.gotImageSize) { // get image size
 				this.getImageSize(this.state.image.uri)
 			}
