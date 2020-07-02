@@ -9,7 +9,7 @@ export default async function loginUser(email, password) {
     */
     try {
         var users = await AsyncStorage.getItem("users") // get already registered users
-        console.log("users: " + users)
+        // console.log("users: " + users)
         if(users != null) {
             users = JSON.parse(users) // parse the JSON string
         } else {

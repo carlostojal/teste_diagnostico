@@ -9,7 +9,7 @@ export default async function saveImage(image) {
     */
     try {
         var images = await AsyncStorage.getItem("images") // get already registered images
-        console.log(images)
+        // console.log(images)
         if(images != null) {
             images = JSON.parse(images) // parse the JSON string
         } else {

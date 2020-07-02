@@ -10,6 +10,7 @@ import text from '../../style/text';
 import saveImage from '../../utils/saveImage';
 import getUser from '../../utils/getUser';
 import getFileSize from '../../utils/getFileSize';
+import moveFile from '../../utils/moveFile';
 
 export default class Upload extends Component {
 
@@ -79,13 +80,13 @@ export default class Upload extends Component {
 				base64: true,
 				quality: 1
 			})
-			console.log(result)
+			// console.log(result)
 			if(!result.cancelled) {
 				let image = this.state.image
 				image.uri = result.uri
 				let extension = result.uri.split('.')[result.uri.split('.').length - 1]
 				image.data = "data:image/" + extension + ";base64," + result.base64
-				console.log(image.data)
+				// console.log(image.data)
 				image.dimensions = [result.width, result.height]
 				this.setState({
 					image: image,
@@ -134,18 +135,37 @@ export default class Upload extends Component {
 		})
 	}
 
+	createImage = async () => {
+		let uri = await moveFile(this.state.image.uri, this.state.image.id)
+		let image = this.state.image
+		image.uri = uri
+		this.setState({
+			image: image,
+			createdImage: true,
+			status: "Created image."
+		})
+	}
+
 	save = () => {
 		if(this.state.image.name != "") {
-			saveImage(this.state.image).then((result) => {
-				if(result == 0) {
-					Alert.alert("Success", "Image saved successfully.")
-					this.props.route.params.load()
-					this.props.navigation.goBack()
-				} else if(result == 1) {
-					Alert.alert("Warning", "An image with the same name was already registered.")
-				} else {
-					Alert.alert("Error", "An unexpected error occurred saving the image. Please try again later.")
-				}
+			this.createImage().then(() => {
+				saveImage(this.state.image).then((result) => {
+					if(result == 0) {
+						Alert.alert("Success", "Image saved successfully.")
+						this.props.route.params.load()
+						this.props.navigation.goBack()
+					} else if(result == 1) {
+						Alert.alert("Warning", "An image with the same name was already registered.")
+					} else {
+						Alert.alert("Error", "An unexpected error occurred saving the image. Please try again later.")
+					}
+				}).catch((error) => {
+					console.log("Error saving image. " + error)
+					Alert.alert("Error", "Couldn't save image. Please try again later.")
+				})
+			}).catch((error) => {
+				console.log("Error moving file from cache. " + error)
+				Alert.alert("Error", "Couldn't retrieve image from cache.")
 			})
 		} else {
 			Alert.alert("Warning", "The name field can't be empty.")
@@ -171,7 +191,7 @@ export default class Upload extends Component {
 			}
 		}
 
-		console.log(this.state.image)
+		// console.log(this.state.image)
 		console.log(this.state.status)
 
 		return(

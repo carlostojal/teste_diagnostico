@@ -7,6 +7,7 @@ import text from '../../style/text';
 
 import loginUser from '../../utils/loginUser';
 import setUser from '../../utils/setUser';
+import clearData from '../../utils/clearData';
 
 export default class Login extends Component {
 	

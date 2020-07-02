@@ -46,7 +46,7 @@ export default class Home extends Component {
 			getUserImages(user_email).then((images) => {
 				if(images != 1) {
 					if(images.length != this.state.images.length) {
-						console.log("UPDATING STATE")
+						// console.log("UPDATING STATE")
 						this.setState({
 							images: images,
 							firstRender: false
