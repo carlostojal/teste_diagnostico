@@ -35,7 +35,7 @@ export default class UserGallery extends Component {
 			var height = this.props.images[i].dimensions[1] / (this.props.images[i].dimensions[0] / width)
 			dimensions.push([width, height])
         }
-        console.log(this.props.images)
+        // console.log(this.props.images)
         return(
 			<View style = {{flex: 1}}>
 				{this.props.images.length > 0 &&
@@ -45,7 +45,7 @@ export default class UserGallery extends Component {
 						numColumns = {4}
 						renderItem = {({item, index}) => (
 							<TouchableOpacity key = {item.id} style = {containers.imageContainer} onPress = {() => this.openViewer(item)} onLongPress = {() => this.showDetails(item)}>
-								<Image resizeMode="cover" source={{uri: (item.data)}} style={containers.image} />
+								<Image resizeMode="cover" source={{uri: 'file://' + item.uri}} style={containers.image} />
 							</TouchableOpacity>
                         )}
                         keyExtractor = {item => item.id.toString()}

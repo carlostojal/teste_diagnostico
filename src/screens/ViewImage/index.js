@@ -10,7 +10,7 @@ export default class ViewImage extends Component {
         this.props.navigation.setOptions({ title: this.props.route.params.image.name })
         return(
             <View style={{flex: 1}}>
-                <Image resizeMode="contain" source={{uri: this.props.route.params.image.data}} style={containers.fullscreenImage}/>
+                <Image resizeMode="contain" source={{uri: 'file://' + this.props.route.params.image.uri}} style={containers.fullscreenImage}/>
             </View>
         )
     }
