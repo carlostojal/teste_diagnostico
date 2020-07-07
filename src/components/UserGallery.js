@@ -21,7 +21,7 @@ export default class UserGallery extends Component {
 		if(item.coordinates[0] == 0 && item.coordinates[1] == 0)
 			details += "NA"
 		else
-			details += "(" + item.coordinates[0] + ";" + item.coordinates[1] + ")"
+			details += item.coordinates[0] + ", " + item.coordinates[1]
 		details += "\n"
 		let date = new Date(item.id)
 		details += "Upload date: " + date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + date.getHours() + ":" + (date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()) + ":" + (date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds()) + "\n"

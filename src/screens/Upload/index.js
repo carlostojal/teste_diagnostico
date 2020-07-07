@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { View, ScrollView, Text, TextInput, TouchableOpacity, Alert, Image, Dimensions } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import Exif from 'react-native-exif';
 
 import containers from '../../style/containers';
 import text from '../../style/text';
@@ -76,14 +75,18 @@ export default class Upload extends Component {
 				mediaTypes: ImagePicker.MediaTypeOptions.Images,
 				allowsEditing: true,
 				allowsMultipleSelection: false,
-				quality: 1
+				quality: 1,
+				exif: true
 			})
 			// console.log(result)
 			if(!result.cancelled) {
 				let image = this.state.image
 				image.uri = result.uri
+				console.log(result)
 				// console.log(image.data)
 				image.dimensions = [result.width, result.height]
+				if(result.exif.hasOwnProperty('GPSLatitude') && result.exif.hasOwnProperty('GPSLongitude'))
+					image.coordinates = [result.exif.GPSLatitude, result.exif.GPSLongitude]
 				this.setState({
 					image: image,
 					firstOpen: false
@@ -106,17 +109,6 @@ export default class Upload extends Component {
 			image: image,
 			gotImageSize: true,
 			status: "Got image size."
-		})
-	}
-
-	getLatLong = async (uri) => {
-		let location = await Exif.getLatLong(uri)
-		let image = this.state.image
-		image.coordinates = [location.latitude, location.longitude]
-		this.setState({
-			image: image,
-			gotLocation: true,
-			status: "Got capture coordinates."
 		})
 	}
 
@@ -179,9 +171,6 @@ export default class Upload extends Component {
 			targetHeight = this.state.image.dimensions[1] / (this.state.image.dimensions[0] / targetWidth)
 			if(!this.state.gotImageSize) { // get image size
 				this.getImageSize(this.state.image.uri)
-			}
-			if(!this.state.gotLocation) { // get capture coordinates
-				this.getLatLong(this.state.image.uri)
 			}
 			if(!this.state.gotUserEmail) { // get current user email
 				this.getUserEmail()
