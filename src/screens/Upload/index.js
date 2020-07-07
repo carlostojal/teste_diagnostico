@@ -11,6 +11,7 @@ import saveImage from '../../utils/saveImage';
 import getUser from '../../utils/getUser';
 import getFileSize from '../../utils/getFileSize';
 import moveFile from '../../utils/moveFile';
+import classify from '../../utils/classify';
 
 export default class Upload extends Component {
 
@@ -27,7 +28,6 @@ export default class Upload extends Component {
 		},
 		firstOpen: true,
 		status: "",
-		tfReady: false,
 		createdImage: false,
 		gotImageSize: false,
 		gotLocation: false,
@@ -66,7 +66,7 @@ export default class Upload extends Component {
 	}
 
 	setClassified = () => {
-		this.setState({ classification: true })
+		this.setState({ classified: true })
 	}
 
 	upload = async () => {
@@ -84,6 +84,9 @@ export default class Upload extends Component {
 				image.uri = result.uri
 				// console.log(image.data)
 				image.dimensions = [result.width, result.height]
+				const img = require('../../../assets/cat.jpg')
+				const classification = await classify(img)
+				console.log(classification)
 				this.setState({
 					image: image,
 					firstOpen: false
